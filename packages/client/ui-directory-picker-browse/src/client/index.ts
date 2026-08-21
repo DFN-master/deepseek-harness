@@ -62,6 +62,21 @@ export function apply(ctx: ClientContext): void {
         'browser.truncated': 'Too many folders to list; only the beginning is shown.',
         'browser.showHidden': 'Show hidden files',
       }],
+      ['pt', {
+        'browser.title': 'Selecionar diretório do workspace',
+        'browser.home': 'Pasta pessoal',
+        'browser.newFolder': 'Nova pasta',
+        'browser.folderName': 'Nome da pasta',
+        'browser.createIn': 'Nova pasta em "{name}"',
+        'browser.untitledFolder': 'Pasta sem nome',
+        'browser.create': 'Criar',
+        'browser.cancel': 'Cancelar',
+        'browser.open': 'Abrir',
+        'browser.editPath': 'Editar caminho',
+        'browser.loading': 'Carregando…',
+        'browser.truncated': 'Há pastas demais para listar; apenas o início é exibido.',
+        'browser.showHidden': 'Mostrar arquivos ocultos',
+      }],
     ]
     try {
       for (const [locale, dict] of dictionaries) disposers.push(ctx.locale.register(LOCALE_NS, locale, dict))

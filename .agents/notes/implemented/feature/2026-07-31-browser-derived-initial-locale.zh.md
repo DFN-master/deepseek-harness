@@ -14,7 +14,7 @@ Status: implemented
 
 **暂定 locale 先经浏览器、再经 `FALLBACK_LOCALE`（`en`）解析；显式 Host 偏好会实时替换它。** `packages/client/locale/src/client/index.ts` 中的 `resolveInitialLocale()` 在服务构造时运行，并表达浏览器／回落顺序。随后，非阻塞 settings 生命周期会应用 `$DSH_HOME/settings.yaml` 中可选的 `locale.preference`；若该值缺失，则继续使用由浏览器派生的值。
 
-**开场 locale 与字典回落值共用一个常量，因为两侧字典是对称的。** `FALLBACK_LOCALE` 同时回答「浏览器未声明任何本应用提供的语言时，界面以哪种语言开场」与「当前 locale 的字典缺失某个 key 时由哪本字典兜住」。这是两个不同的问题，若其中任一答案必须不同，拆成两个常量才是对的——但每一对已提供的 `zh`／`en` 字典都声明了完全相同的 key 集合，因此回落这一步总能解析成功，两个答案都是 `en`。残余情形指向英文而非 `zh`，是因为一个声明了本应用都不支持的语言的浏览器，其读者最不可能读中文。`scripts/locale-dictionary-parity.spec.ts` 为这个共用常量所依赖的对称性设了门禁：只加在一侧的 key 会让该用例指名失败，而不是日后在运行中的界面里显现为形如 `list.aria` 的裸 key。
+**开场 locale 与字典回落值共用一个常量，因为各 locale 的字典是对称的。** `FALLBACK_LOCALE` 同时回答「浏览器未声明任何本应用提供的语言时，界面以哪种语言开场」与「当前 locale 的字典缺失某个 key 时由哪本字典兜住」。这是两个不同的问题，若其中任一答案必须不同，拆成两个常量才是对的——但每本已提供字典在每个已提供 locale 下都声明了完全相同的 key 集合，因此回落这一步总能解析成功，两个答案都是 `en`。残余情形指向英文而非 `zh`，是因为一个声明了本应用都不支持的语言的浏览器，其读者最不可能读中文。`scripts/locale-dictionary-parity.spec.ts` 为这个共用常量所依赖的对称性设了门禁：只加在某一个 locale 侧的 key 会让该用例指名失败，而不是日后在运行中的界面里显现为形如 `list.aria` 的裸 key。
 
 **浏览器匹配按主子标签进行，且遍历有序列表。** `detectBrowserLocale()` 遍历 `[...(navigator.languages ?? []), navigator.language]`，返回主子标签命中已提供 locale 的首个条目，因此 `zh-Hans-CN` 与 `zh-TW` 同归 `zh`、`en-GB` 归 `en`；而只请求本应用不提供的语言（`fr`、`de`）的浏览器则什么都匹配不到，交由 `FALLBACK_LOCALE` 接管。`navigator.language` 排在列表之后，并兜住那些 Navigator 上没有 `languages` 的宿主——DOM 库把它标注为必然存在，所以这份容忍带一条窄口径 lint 例外，与 `localStorage` 守卫表达的环境边界不信任同源。
 
@@ -39,7 +39,7 @@ Status: implemented
 
 ## Consequences
 
-- 来自英文浏览器的首访落在英文界面，中文浏览器落在中文界面，而两者皆未声明的浏览器落在英文而非中文界面。语言行依然呈现同样两个以自身语言自述的选项，两个方向的脱身通道都未改变。
+- 来自英文浏览器的首访落在英文界面，中文浏览器落在中文界面，而两者皆未声明的浏览器落在英文而非中文界面。语言行为每个已提供的 locale 呈现一个以自身语言自述的选项，两个方向的脱身通道都未改变。
 - 字典解析方向发生反转：当前 locale 缺失的 key 现在回落到 `en` 而非 `zh`。在字典对称的前提下，没有任何已提供的 key 行为发生变化——这正是那道对称性门禁存在的原因：它是这次反转所依赖的前提。
 - `<html lang>` 现在在两个方向上都如实报告屏幕上的语言，这也关闭了 [#2160](https://github.com/deepseek-harness/deepseek-harness/issues/2160)。若某个客户端从未激活 locale 插件，则保留所服务的默认值，因此该属性退化为旧的静态行为，而不会退化为空值。
 - 客户端树的非浏览器运行（node 启动、非 jsdom 单测车道）现在以 `en` 开场。断言已提供中文文案的用例必须在其构造的 runtime 上显式调用 `setLocale('zh')`；套件级的 `usePinnedBrowserLanguages('zh-CN')` 仅在同时声明了 `@vitest-environment jsdom` 的文件中生效，因为没有 `window` 时探测路径根本不会读取 `navigator`。此前有七个 `*.client.spec.ts` 文件带着这样一条失效的固定语句，实际依赖的是旧的 `zh` 回落值。

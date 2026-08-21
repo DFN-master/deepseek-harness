@@ -32,3 +32,18 @@ export const en = {
   'action.edit': 'Edit goal',
   'action.clear': 'Clear goal',
 } satisfies Record<GoalKey, string>
+
+/** pt-BR dictionary, checked complete against the zh key set. */
+export const pt = {
+  'phase.active': 'Meta em andamento',
+  'phase.paused': 'Meta pausada',
+  'phase.blocked': 'Meta bloqueada',
+  'objective.aria': 'Conteúdo da meta',
+  'commandInput.aria': 'Entrada de comando',
+  'action.save': 'Salvar meta',
+  'action.cancel': 'Cancelar edição',
+  'action.pause': 'Pausar meta',
+  'action.resume': 'Retomar meta',
+  'action.edit': 'Editar meta',
+  'action.clear': 'Limpar meta',
+} satisfies Record<GoalKey, string>
