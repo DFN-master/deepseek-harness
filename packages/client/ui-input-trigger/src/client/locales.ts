@@ -24,3 +24,12 @@ export const en = {
   'loading': 'Loading…',
   'suggestions.aria': 'Trigger suggestions',
 } satisfies Record<MenuKey, string>
+
+/** pt-BR dictionary, checked complete against the zh key set. */
+export const pt = {
+  'command': 'Comandos',
+  'skill': 'Skills',
+  'subagent': 'Subagentes',
+  'loading': 'Carregando…',
+  'suggestions.aria': 'Sugestões de gatilhos',
+} satisfies Record<MenuKey, string>

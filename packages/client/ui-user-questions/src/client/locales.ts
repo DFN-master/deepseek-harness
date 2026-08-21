@@ -40,3 +40,22 @@ export const en = {
   'plan.decline': 'Refuse',
   'plan.discuss': 'Chat about it',
 } satisfies Record<QuestionKey, string>
+
+/** pt-BR dictionary, checked complete against the zh key set. */
+export const pt = {
+  'error.incomplete': 'Conclua esta pergunta primeiro.',
+  'error.unanswered': 'Selecione uma opção ou digite uma resposta personalizada.',
+  'nav.prev': 'Pergunta anterior',
+  'nav.next': 'Próxima pergunta',
+  'nav.minimize': 'Recolher o cartão de perguntas',
+  'nav.maximize': 'Expandir o cartão de perguntas',
+  'nav.cancel': 'Descartar todas as perguntas',
+  'option.recommended': 'Recomendado',
+  'custom.placeholder': 'Digite sua resposta',
+  'action.skip': 'Pular esta pergunta',
+  'action.next': 'Avançar',
+  'plan.header': 'Plano aguardando revisão',
+  'plan.approve': 'Aprovar',
+  'plan.decline': 'Recusar',
+  'plan.discuss': 'Conversar sobre isso no chat',
+} satisfies Record<QuestionKey, string>
